@@ -2,32 +2,33 @@ const async = require('async');
 const Wallet = require('../models/Wallet');
 
 class Hiker {
-    constructor(sourceCoin, coins, destCoins) {
+    constructor(sourceCoin, coins, destCoin) {
         this.sourceCoin = sourceCoin;
-        this.destCoins = destCoins || sourceCoin;
+        this.destCoin = destCoin || sourceCoin;
         this.coins = coins;
 
-        this.sourceWallet = new Wallet(sourceCoin, Hiker.initialBalance);
+        this.sourceWallet = new Wallet(this.sourceCoin, Hiker.initialBalance);
 
         this.paths = [];
-        this.minBalance = Infinity;
-        this.minPath = "";
-        this.maxBalance = 0;
-        this.maxPath = "";
+
+        let maxWallet = new Wallet(this.sourceWallet);
+        maxWallet.convertToCoin(this.destCoin);
+        let maxPath = this.sourceCoin.symbol + '_' + this.destCoin.symbol;
+
+        this.initMaxBalance = maxWallet.balance;
+        this.minBalance = maxWallet.balance;
+        this.minPath = maxPath;
+        this.maxBalance = maxWallet.balance;
+        this.maxPath = maxPath;
     }
     static get initialBalance() {
         return 100;
     }
 
     displayMaxima() {
-        const maxLength = this.maxPath.split('_').length;
-        const minLength = this.minPath.split('_').length;
-        if(maxLength > 2) {
-            console.log(`Max: ${this.maxBalance} ${this.maxPath}`);
-        }
-        if(minLength > 2) {
-            console.log(`Min: ${this.minBalance} ${this.minPath}`);
-        }
+        console.log(`Basic: ${this.sourceWallet.balance} ${this.sourceCoin.symbol} -> ${this.initMaxBalance} ${this.destCoin.symbol}`);
+        console.log(`Max: ${this.maxBalance} ${this.maxPath}`);
+        console.log(`Min: ${this.minBalance} ${this.minPath}`);
     }
     storePath(wallet) {
         this.paths = this.paths.concat(wallet);
@@ -62,16 +63,13 @@ class Hiker {
             if(destinationCoin !== currentWallet.coin) {
 
                 let nextWallet = new Wallet(currentWallet);
-
-                acc.push(nextWallet);
                 nextWallet.convertToCoin(destinationCoin);
 
-                if(nextWallet.coin === this.destCoins) {
+                acc.push(nextWallet);
 
+                if(nextWallet.coin === this.destCoin) {
                     this.storePath(nextWallet);
-
                 }
-
             }
 
             return acc;
@@ -81,10 +79,24 @@ class Hiker {
     }
 
     hike() {
-        // console.log("hiking " + this.sourceCoin.symbol + "...");
+        // console.log("");
+        // console.log("Computing "+ this.sourceCoin.symbol + "_" + this.destCoin.symbol);
 
         this.repeatLayer([this.sourceWallet]);
-        this.displayMaxima();
+        if(this.isUncommon()) {
+            console.log("                   UNCOMMON            !!!!!!!!!!!!!");
+            this.displayMaxima();
+        }
+    }
+
+    isUncommon() {
+        const maxLength = this.maxPath.split('_').length;
+        const minLength = this.minPath.split('_').length;
+
+        if(maxLength > 2 || minLength === 2 || this.maxBalance > this.initMaxBalance) {
+            return true;
+        }
+        return false;
     }
 
     static getWalletPath(wallet) {

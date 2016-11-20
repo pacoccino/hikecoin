@@ -1,3 +1,5 @@
+var Decimal = require('decimal.js');
+
 class Wallet {
     constructor(wallet, balance) {
         this.parent = null;
@@ -5,30 +7,36 @@ class Wallet {
 
         if(wallet instanceof Wallet) {
             this.coin = wallet.coin;
-            this.balance = wallet.balance;
+            this.bigBalance = new Decimal(wallet.balance);
             this.parent = wallet;
             wallet.addChild(this);
             this.height = wallet.height + 1;
         } else {
             let coin = wallet;
             this.coin = coin;
-            this.balance = balance || 0;
+            this.bigBalance = new Decimal(balance || 0);
             this.height = 0;
         }
     }
 
+    get balance() {
+        return this.bigBalance.toNumber();
+    }
+
     convertToCoin(destinationCoin) {
+        if(destinationCoin === this.coin) return;
+
         let link = this.coin.getRateWith(destinationCoin);
         if(!link) {
             throw "No link between " + this.coin.symbol + '_' + destinationCoin.symbol;
         }
 
-        this.balance = Wallet.change(this.balance, link);
+        this.bigBalance = Wallet.change(this.bigBalance, link);
         this.coin = destinationCoin;
     }
 
     static change(balance, link) {
-        return balance * link.rate;
+        return balance.times(link.rate);
     }
 
     addChild(child) {

@@ -8,13 +8,27 @@ async function app() {
 
     const coins = Coins.getCoins();
 
-    // const sourceCoin = Coins.getCoin('BTC');
-    // const destCoin = Coins.getCoin('BCY');
-    //
-    // const hiker = new Hiker(sourceCoin, coins, destCoin);
-    // hiker.hike();
-    //
-    Robert.forEachCoins(coins);
+    const lookForCouple = (sourceSymbol, destSymbol) => {
+        console.log("looking ForCouple");
+        const sourceCoin = Coins.getCoin(sourceSymbol);
+        const destCoin = Coins.getCoin(destSymbol);
+
+        const hiker = new Hiker(sourceCoin, coins, destCoin);
+        hiker.hike();
+    };
+
+    const lookForAll = () => {
+        console.log("looking ForAll");
+        const robert = new Robert(coins);
+
+        robert.forSameCoins();
+        robert.forCoinCombinations();
+    };
+
+    // lookForCouple('DGB', 'BTC');
+    lookForAll();
+
+    console.log("end");
 }
 
 try {

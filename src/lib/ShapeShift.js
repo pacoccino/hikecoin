@@ -1,5 +1,8 @@
 const rq = require('request-promise-native');
 
+const mi = require('../data/marketinfo.json');
+const coins = require('../data/coins.json');
+
 class ShapeShift {
     constructor() {
     }
@@ -22,6 +25,8 @@ class ShapeShift {
         }
     }
     async marketInfo(symbolPair) {
+        // return Promise.resolve(mi);
+
         const req = {
             endpoint: "marketinfo"
         };
@@ -31,6 +36,8 @@ class ShapeShift {
         return await this._request(req)
     }
     async getCoins() {
+        // return Promise.resolve(coins);
+
         const req = {
             endpoint: "getCoins"
         };

@@ -1,16 +1,26 @@
 const Hiker = require('./Hiker');
 
 class Robert {
-    constructor() {
+    constructor(coins) {
+        this.coins = coins;
     }
 
-    static forEachCoins(coins) {
-        coins.forEach(fromCoin => {
-            coins.forEach(toCoin => {
-                console.log("");
-                console.log("Computing "+ fromCoin.symbol + "_" + toCoin.symbol);
-                const hiker = new Hiker(fromCoin, coins, toCoin);
-                hiker.hike();
+    hike(fromCoin, toCoin) {
+        const hiker = new Hiker(fromCoin, this.coins, toCoin);
+        hiker.hike();
+    }
+    forSameCoins() {
+        this.coins.forEach(fromCoin => {
+            let toCoin = fromCoin;
+            this.hike(fromCoin, toCoin);
+        });
+    }
+    forCoinCombinations() {
+        this.coins.forEach(fromCoin => {
+            this.coins.forEach(toCoin => {
+                if(fromCoin !== toCoin) {
+                    this.hike(fromCoin, toCoin);
+                }
             })
         })
     }
