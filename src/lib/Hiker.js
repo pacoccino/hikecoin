@@ -2,88 +2,100 @@ const async = require('async');
 const Wallet = require('../models/Wallet');
 
 class Hiker {
-    constructor(sourceCoin, coins) {
+    constructor(sourceCoin, coins, destCoins) {
         this.sourceCoin = sourceCoin;
+        this.destCoins = destCoins || sourceCoin;
         this.coins = coins;
 
         this.sourceWallet = new Wallet(sourceCoin, Hiker.initialBalance);
 
         this.paths = [];
         this.minBalance = Infinity;
+        this.minPath = "";
         this.maxBalance = 0;
+        this.maxPath = "";
     }
     static get initialBalance() {
         return 100;
     }
 
     displayMaxima() {
-
-        console.log(Hiker.getWalletPath(wallet) + "|---->");
-        console.log("MIN :" + this.minBalance + " " + wallet.coin.symbol);
-        console.log("MAX :" + this.maxBalance + " " + wallet.coin.symbol);
-        console.log("");
+        const maxLength = this.maxPath.split('_').length;
+        const minLength = this.minPath.split('_').length;
+        if(maxLength > 2) {
+            console.log(`Max: ${this.maxBalance} ${this.maxPath}`);
+        }
+        if(minLength > 2) {
+            console.log(`Min: ${this.minBalance} ${this.minPath}`);
+        }
     }
     storePath(wallet) {
         this.paths = this.paths.concat(wallet);
 
         if(wallet.balance > this.maxBalance) {
             this.maxBalance = wallet.balance;
-            console.log(Hiker.getWalletPath(wallet) + "|---->");
-            console.log("MAX :" + wallet.balance + " " + wallet.coin.symbol);
-            console.log("");
+            this.maxPath = Hiker.getWalletPath(wallet);
         }
         if(wallet.balance < this.minBalance) {
             this.minBalance = wallet.balance;
-            console.log(Hiker.getWalletPath(wallet) + "|---->");
-            console.log("MIN :" + wallet.balance + " " + wallet.coin.symbol);
-            console.log("");
+            this.minPath = Hiker.getWalletPath(wallet);
+        }
+    }
+
+    repeatLayer(layerWallets){
+
+        const actualHeight = layerWallets[0].height;
+
+        if(actualHeight < 3){
+            // console.log(`Computing layer ${actualHeight}, with ${layerWallets.length} coins`);
+
+            this.repeatLayer(layerWallets.map( (wallet) => this.repeat(wallet) ).reduce((a,b) => a.concat(b), []));
+
         }
 
-        /*console.log(Hiker.getWalletPath(wallet) + "|---->");
-        console.log(wallet.coin.symbol + " " + wallet.balance);
-        console.log("");*/
     }
+
     repeat(currentWallet) {
-        async.eachSeries(this.coins, (destinationCoin, callback) => {
-            async.nextTick(() => {
-                if(destinationCoin === currentWallet.coin) {
-                    return callback(null);
-                }
+
+        return this.coins.reduce( (acc, destinationCoin) => {
+
+            if(destinationCoin !== currentWallet.coin) {
+
                 let nextWallet = new Wallet(currentWallet);
-                if(nextWallet.height > 3) {
-                    return callback(null);
-                }
+
+                acc.push(nextWallet);
                 nextWallet.convertToCoin(destinationCoin);
 
-                if(nextWallet.coin === this.sourceCoin) {
+                if(nextWallet.coin === this.destCoins) {
+
                     this.storePath(nextWallet);
-                } else {
-                    this.repeat(nextWallet);
+
                 }
-                callback(null);
-            });
-        }, e => {
-            if(e) {
-                throw e;
+
             }
-        })
+
+            return acc;
+
+        }, []);
+
     }
 
     hike() {
-        console.log("hiking " + this.sourceCoin.symbol + "...");
+        // console.log("hiking " + this.sourceCoin.symbol + "...");
 
-        this.repeat(this.sourceWallet);
-
+        this.repeatLayer([this.sourceWallet]);
+        this.displayMaxima();
     }
 
     static getWalletPath(wallet) {
-        let str = wallet.coin.symbol + ' <- ';
+        let path = [wallet.coin.symbol];
         let parentWallet = wallet.parent;
         while(parentWallet) {
-            str += parentWallet.coin.symbol + ' <- ';
+            path = path.concat(parentWallet.coin.symbol);
             parentWallet = parentWallet.parent;
         }
-        return str;
+        path = path.reverse();
+        return path.join('_');
     }
 }
 

@@ -1,4 +1,5 @@
 const Coins = require('./models/Coins');
+const Robert = require('./lib/Robert');
 const Hiker = require('./lib/Hiker');
 
 async function app() {
@@ -6,9 +7,14 @@ async function app() {
     await Coins.updateLinks();
 
     const coins = Coins.getCoins();
-    const sourceCoin = Coins.getCoin('EMC');
-    const hiker = new Hiker(sourceCoin, coins);
-    hiker.hike();
+
+    // const sourceCoin = Coins.getCoin('BTC');
+    // const destCoin = Coins.getCoin('BCY');
+    //
+    // const hiker = new Hiker(sourceCoin, coins, destCoin);
+    // hiker.hike();
+    //
+    Robert.forEachCoins(coins);
 }
 
 try {
