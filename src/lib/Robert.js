@@ -1,13 +1,15 @@
 const Hiker = require('./Hiker');
+const Coins = require('../models/Coins');
 
+const coins = Coins.getCoins();
 class Robert {
-    constructor(coins) {
-        this.coins = coins;
+    constructor() {
+        this.coins = Coins.getCoins();
     }
 
     hike(fromCoin, toCoin) {
-        const hiker = new Hiker(fromCoin, this.coins, toCoin);
-        hiker.hike();
+        const hiker = new Hiker(fromCoin, toCoin);
+        hiker.findAllPaths();
     }
     forSameCoins() {
         this.coins.forEach(fromCoin => {

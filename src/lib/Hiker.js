@@ -1,15 +1,15 @@
-const async = require('async');
+const Coins = require('../models/Coins');
 const Wallet = require('../models/Wallet');
 
 class Hiker {
-    constructor(sourceCoin, coins, destCoin) {
+    constructor(sourceCoin, destCoin, maxHeight = 3) {
         this.sourceCoin = sourceCoin;
         this.destCoin = destCoin || sourceCoin;
-        this.coins = coins;
 
         this.sourceWallet = new Wallet(this.sourceCoin, Hiker.initialBalance);
 
         this.paths = [];
+        this.maxHeight = maxHeight;
 
         let maxWallet = new Wallet(this.sourceWallet);
         maxWallet.convertToCoin(this.destCoin);
@@ -25,12 +25,12 @@ class Hiker {
         return 100;
     }
 
-    displayMaxima() {
+    _displayMaxima() {
         console.log(`Basic: ${this.sourceWallet.balance} ${this.sourceCoin.symbol} -> ${this.initMaxBalance} ${this.destCoin.symbol}`);
         console.log(`Max: ${this.maxBalance} ${this.maxPath}`);
         console.log(`Min: ${this.minBalance} ${this.minPath}`);
     }
-    storePath(wallet) {
+    _storePath(wallet) {
         this.paths = this.paths.concat(wallet);
 
         if(wallet.balance > this.maxBalance) {
@@ -43,22 +43,21 @@ class Hiker {
         }
     }
 
-    repeatLayer(layerWallets){
-
+    _fetchLayer(layerWallets){
         const actualHeight = layerWallets[0].height;
 
-        if(actualHeight < 3){
+        if(actualHeight < this.maxHeight){
             // console.log(`Computing layer ${actualHeight}, with ${layerWallets.length} coins`);
 
-            this.repeatLayer(layerWallets.map( (wallet) => this.repeat(wallet) ).reduce((a,b) => a.concat(b), []));
-
+            const newLayers = layerWallets.map( wallet => this._fetchWallet(wallet) )
+                .reduce((a,b) => a.concat(b), []);
+            this._fetchLayer(newLayers);
         }
-
     }
 
-    repeat(currentWallet) {
+    _fetchWallet(currentWallet) {
 
-        return this.coins.reduce( (acc, destinationCoin) => {
+        return Coins.getCoins().reduce( (acc, destinationCoin) => {
 
             if(destinationCoin !== currentWallet.coin) {
 
@@ -68,7 +67,7 @@ class Hiker {
                 acc.push(nextWallet);
 
                 if(nextWallet.coin === this.destCoin) {
-                    this.storePath(nextWallet);
+                    this._storePath(nextWallet);
                 }
             }
 
@@ -78,15 +77,31 @@ class Hiker {
 
     }
 
-    hike() {
+    findAllPaths() {
         // console.log("");
         // console.log("Computing "+ this.sourceCoin.symbol + "_" + this.destCoin.symbol);
 
-        this.repeatLayer([this.sourceWallet]);
+        this._fetchLayer([this.sourceWallet]);
         if(this.isUncommon()) {
             console.log("                   UNCOMMON            !!!!!!!!!!!!!");
-            this.displayMaxima();
+            this._displayMaxima();
         }
+    }
+
+    computePath(path) {
+        path = path.split('_');
+        let currentWallet = this.sourceWallet;
+
+        for(let i=1; i< path.length; i++) {
+            let newCoin = Coins.getCoin(path[i]);
+
+            let newWallet = new Wallet(currentWallet);
+            newWallet.convertToCoin(newCoin);
+
+            currentWallet = newWallet;
+        }
+        this._storePath(currentWallet);
+        console.log(`${this.sourceWallet.balance} ${this.sourceCoin.symbol} -> ${currentWallet.balance} ${this.destCoin.symbol} -  ${path}`);
     }
 
     isUncommon() {
