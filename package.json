@@ -1,0 +1,24 @@
+{
+  "name": "hikecoin",
+  "version": "0.1.0",
+  "description": "Find your path through coin valley",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src"
+  },
+  "author": "pakokrew@gmail.com",
+  "license": "ISC",
+  "keywords": [
+    "bitcoin",
+    "forex",
+    "shapeshit",
+    "altcoins",
+    "blockchain"
+  ],
+  "dependencies": {
+    "async": "^2.1.2",
+    "decimal.js": "^7.1.0",
+    "request": "^2.79.0",
+    "request-promise-native": "^1.0.3"
+  }
+}
