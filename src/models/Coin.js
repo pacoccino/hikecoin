@@ -19,6 +19,7 @@ class Coin {
     }
 
     updateRate(coin, rate) {
+        // TODO detect NaN
         if(!rate.rate) throw "invalid rate";
         this.links.set(coin.symbol, rate);
     }

@@ -1,4 +1,3 @@
-const COINS_LIST = require('../coins.json');
 const Coin = require('./Coin');
 const ShapeShift = require('../lib/shapeshift');
 const async = require('async');
@@ -72,42 +71,22 @@ class Coins {
     }
 
     async updateLinks() {
-        return new Promise(async (resolve, reject) => {
-            const allLinks = await ShapeShift.marketInfo();
+        const allLinks = await ShapeShift.marketInfo();
 
-            async.each(allLinks, (link, cb) => {
-                async.nextTick(() => {
-                    let symbols = link.pair.split('_');
+        allLinks.map(link => {
+            let symbols = link.pair.split('_');
 
-                    let sourceCoin = this.getCoin(symbols[0]);
-                    let destCoin = this.getCoin(symbols[1]);
+            let sourceCoin = this.getCoin(symbols[0]);
+            let destCoin = this.getCoin(symbols[1]);
 
-                    if(!sourceCoin || !destCoin) {
-                        return cb(null)
-                    }
-                    sourceCoin.updateRate(destCoin, link);
-                    return cb(null);
-                });
-
-            }, e => {
-                console.log("Coins linked");
-                if(e) {
-                    reject(e);
-                } else {
-                    resolve(e);
-                }
-            });
+            if(!sourceCoin || !destCoin) {
+                return null;
+            }
+            sourceCoin.updateRate(destCoin, link);
+            return null;
         });
     }
 }
-
-const timer = (delay) => {
-    return new Promise(resolve => {
-        setTimeout(() => {
-            resolve();
-        }, delay);
-    });
-};
 
 const coinInstance = new Coins();
 

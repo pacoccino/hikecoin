@@ -1,43 +1,33 @@
 const Coins = require('./models/Coins');
-const Robert = require('./lib/Robert');
+const Army = require('./lib/Army');
 const Hiker = require('./lib/Hiker');
 
-async function app() {
+const refreshInterval = 30000;
+
+async function coinRefresher() {
     await Coins.initCoins();
     await Coins.updateLinks();
+    console.log("Coins updated");
+}
 
-    const lookForCouple = (sourceSymbol, destSymbol) => {
-        console.log("looking ForCouple");
-        const sourceCoin = Coins.getCoin(sourceSymbol);
-        const destCoin = Coins.getCoin(destSymbol);
+async function app() {
 
-        const hiker = new Hiker(sourceCoin, destCoin);
-        hiker.findAllPaths();
-    };
+    await coinRefresher();
 
-    const lookForPath = (path) => {
-        // console.log("looking ForPath");
-        let pathArray = path.split("_");
-
-        const sourceCoin = Coins.getCoin(pathArray[0]);
-        const destCoin = Coins.getCoin(pathArray[pathArray.length-1]);
-
-        const hiker = new Hiker(sourceCoin, destCoin);
-        hiker.computePath(path);
-    };
+    setInterval(coinRefresher, refreshInterval);
 
     const lookForAll = () => {
         console.log("looking ForAll");
-        const robert = new Robert();
 
-        robert.forSameCoins();
-        robert.forCoinCombinations();
+        Army.forSameCoins();
+        Army.forCoinCombinations();
     };
 
-    // lookForCouple('DGB', 'BTC');
-    lookForPath('DGB_BTC');
-    lookForPath('DGB_USDT_BTC');
-    lookForPath('BTC_DGB_USDT_BTC');
+    Army.hikeLink('DGB', 'BTC');
+    // Army.hikePath('DGB_BTC');
+    // Army.hikePath('DGB_USDT_BTC');
+    // Army.hikePath('BTC_DGB_USDT_BTC');
+    // Army.hikePath('DGB_USDT_BTC_DGB');
     // lookForAll();
 
     console.log("end");

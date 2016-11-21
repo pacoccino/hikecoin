@@ -25,7 +25,7 @@ class ShapeShift {
         }
     }
     async marketInfo(symbolPair) {
-        // return Promise.resolve(mi);
+        return Promise.resolve(mi);
 
         const req = {
             endpoint: "marketinfo"
@@ -36,7 +36,7 @@ class ShapeShift {
         return await this._request(req)
     }
     async getCoins() {
-        // return Promise.resolve(coins);
+        return Promise.resolve(coins);
 
         const req = {
             endpoint: "getCoins"
