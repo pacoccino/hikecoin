@@ -1,6 +1,8 @@
 const Coins = require('./models/Coins');
 const Army = require('./lib/Army');
+// const API = require('./lib/api');
 const Hiker = require('./lib/Hiker');
+const Elephant = require('./models/Elephant');
 
 const refreshInterval = 30000;
 
@@ -23,13 +25,15 @@ async function app() {
         Army.forCoinCombinations();
     };
 
-    Army.hikeLink('DGB', 'BTC');
-    // Army.hikePath('DGB_BTC');
-    // Army.hikePath('DGB_USDT_BTC');
-    // Army.hikePath('BTC_DGB_USDT_BTC');
+    // Army.hikeLink('DGB', 'BTC');
+    Army.hikePath('DGB_BTC');
+    Army.hikePath('DGB_USDT_BTC');
+    Army.hikePath('DGB_BTC_DGB_USDT_BTC');
     // Army.hikePath('DGB_USDT_BTC_DGB');
     // lookForAll();
 
+    console.log(Elephant.getSortedPaths('DGB', 'BTC'))
+    // API();
     console.log("end");
 }
 

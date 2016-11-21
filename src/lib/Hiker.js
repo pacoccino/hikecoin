@@ -1,5 +1,6 @@
 const Coins = require('../models/Coins');
 const Wallet = require('../models/Wallet');
+const Elephant = require('../models/Elephant');
 
 class Hiker {
     constructor(maxHeight = 3) {
@@ -54,17 +55,21 @@ class Hiker {
     }
 
     _storePath(wallet) {
-        const report = Hiker.getReport(wallet);
+        const report = this.getReport(wallet);
         this.paths = this.paths.concat(report);
 
         if(wallet.balance > this.maxBalance) {
+            this.maxReport = report;
             this.maxBalance = wallet.balance;
             this.maxPath = report.path;
         }
         if(wallet.balance < this.minBalance) {
+            this.minReport = report;
             this.minBalance = wallet.balance;
             this.minPath = report.path;
         }
+
+        Elephant.memReport(report);
 
         return report;
     }
@@ -132,7 +137,7 @@ class Hiker {
             currentWallet = newWallet;
         }
         const report = this._storePath(currentWallet);
-        console.log(`${report.sourceWallet.balance} ${report.sourceWallet.coin.symbol} -> ${report.finalWallet.balance} ${report.finalWallet.coin.symbol} -  ${report.path}`);
+        console.log(`${report.sourceBalance} ${report.sourceCoin} -> ${report.finalBalance} ${report.finalCoin} -  ${report.path}`);
         return report;
     }
 
@@ -146,15 +151,16 @@ class Hiker {
         return false;
     }
 
-    static getReport(wallet) {
+    getReport(wallet) {
         const walletPath = Hiker.getWalletPath(wallet);
 
         return {
+            path: Hiker.getCoinPath(walletPath.map(wallet => wallet.coin)),
             sourceCoin: walletPath[0].coin.symbol,
             sourceBalance: walletPath[0].balance,
             finalCoin: walletPath[walletPath.length -1].coin.symbol,
             finalBalance: walletPath[walletPath.length -1].balance,
-            path: Hiker.getCoinPath(walletPath.map(wallet => wallet.coin))
+            directBalance: this.directResult.wallet.balance
         };
     }
 

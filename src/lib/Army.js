@@ -1,4 +1,4 @@
-const amqp = require('amqplib/callback_api');
+// const amqp = require('amqplib/callback_api');
 
 const config = require('../config.json');
 const Hiker = require('./Hiker');
@@ -55,7 +55,7 @@ class Army {
         return hiker.findAllPaths();
     }
     static async hikePath(path) {
-        return addToQueue('hikePath', {path});
+        // return addToQueue('hikePath', {path});
         const hiker = new Hiker();
         hiker.setPath({path});
         return hiker.hikePath();
