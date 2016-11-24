@@ -16,7 +16,7 @@ async function coinRefresher() {
 async function linkRefresher() {
     console.log("Updating links...");
     await Army.forAll();
-    linkRefresher();
+    setTimeout(linkRefresher, 30 * 60 * 1000);
     console.log("Links updated");
 }
 

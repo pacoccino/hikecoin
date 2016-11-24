@@ -1,6 +1,7 @@
 const Coins = require('../models/Coins');
 const Wallet = require('../models/Wallet');
 const Elephant = require('../models/Elephant');
+const Report = require('../models/Report');
 
 class Hiker {
     constructor(maxHeight = 3) {
@@ -35,7 +36,7 @@ class Hiker {
         let directWallet = new Wallet(this.sourceWallet);
         directWallet.convertToCoin(this.destCoin);
         this.directResult = {
-            path: Hiker.getCoinPath([this.sourceCoin, this.destCoin]),
+            path: Report.getCoinPath([this.sourceCoin, this.destCoin]),
             wallet: directWallet
         };
 
@@ -58,7 +59,7 @@ class Hiker {
     }
 
     _storePath(wallet) {
-        const report = this.getReport(wallet);
+        const report = new Report(wallet, this.directResult);
         this.paths = this.paths.concat(report);
 
         if(wallet.balance > this.maxBalance) {
@@ -150,39 +151,6 @@ class Hiker {
             return true;
         }
         return false;
-    }
-
-    getReport(wallet) {
-        const walletPath = Hiker.getWalletPath(wallet);
-
-        const report = {
-            path: Hiker.getCoinPath(walletPath.map(wallet => wallet.coin)),
-            sourceCoin: walletPath[0].coin.symbol,
-            sourceBalance: walletPath[0].balance,
-            finalCoin: walletPath[walletPath.length -1].coin.symbol,
-            finalBalance: walletPath[walletPath.length -1].balance,
-            directBalance: this.directResult.wallet.balance,
-        };
-
-        report.benefit = report.finalBalance / report.directBalance;
-
-        return report;
-    }
-
-    static getWalletPath(wallet) {
-        let walletPath = [wallet];
-        let parentWallet = wallet.parent;
-        while(parentWallet) {
-            walletPath = walletPath.concat(parentWallet);
-            parentWallet = parentWallet.parent;
-        }
-        walletPath = walletPath.reverse();
-
-        return walletPath;
-    }
-
-    static getCoinPath(coinArray) {
-        return coinArray.map(coin => coin.symbol).join('_');
     }
 }
 

@@ -84,7 +84,9 @@ const API = () => {
             .catch(next);
     });
     app.get('/listBestPaths', (req, res, next) => {
-        Elephant.listBestPaths()
+        const limit = req.query.limit || 10;
+
+        Elephant.listBestPaths(limit)
             .then(bestPaths => {
                 res.send(bestPaths);
             })

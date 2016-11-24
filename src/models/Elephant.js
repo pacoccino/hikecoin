@@ -13,11 +13,12 @@ class Elephant {
 
     listBestPaths(limit = 10) {
         const paths = [];
+        // TODO aggregate by source/dest
 
         const reportIterator = this.reports.values();
         let currentReport;
         while(currentReport = reportIterator.next().value) {
-            if(currentReport.benefit >= 1) {
+            if(currentReport.benefit > 1) {
                 paths.push(currentReport);
             }
         }
