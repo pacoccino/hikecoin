@@ -42,6 +42,8 @@ class Hiker {
         this.minPath = this.directResult.path;
         this.maxBalance = directWallet.balance;
         this.maxPath = this.directResult.path;
+
+        this._storePath(this.directResult.wallet);
     }
 
     static get initialBalance() {
@@ -49,7 +51,7 @@ class Hiker {
     }
 
     _displayMaxima() {
-        console.log(`Basic: ${this.sourceWallet.balance} ${this.sourceCoin.symbol} -> ${this.initMaxBalance} ${this.destCoin.symbol}`);
+        console.log(`Basic: ${this.sourceWallet.balance} ${this.sourceCoin.symbol} -> ${this.directResult.wallet.balance} ${this.directResult.wallet.coin.symbol}`);
         console.log(`Max: ${this.maxBalance} ${this.maxPath}`);
         console.log(`Min: ${this.minBalance} ${this.minPath}`);
     }
@@ -154,14 +156,18 @@ class Hiker {
     getReport(wallet) {
         const walletPath = Hiker.getWalletPath(wallet);
 
-        return {
+        const report = {
             path: Hiker.getCoinPath(walletPath.map(wallet => wallet.coin)),
             sourceCoin: walletPath[0].coin.symbol,
             sourceBalance: walletPath[0].balance,
             finalCoin: walletPath[walletPath.length -1].coin.symbol,
             finalBalance: walletPath[walletPath.length -1].balance,
-            directBalance: this.directResult.wallet.balance
+            directBalance: this.directResult.wallet.balance,
         };
+
+        report.benefit = report.finalBalance / report.directBalance;
+
+        return report;
     }
 
     static getWalletPath(wallet) {

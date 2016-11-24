@@ -20,6 +20,7 @@ function test() {
 
         Army.forSameCoins();
         Army.forCoinCombinations();
+        console.log("end lookForAll");
     };
 
     // Army.hikeLink('DGB', 'BTC');
@@ -27,10 +28,10 @@ function test() {
     Army.hikePath('DGB_USDT_BTC');
     Army.hikePath('DGB_BTC_DGB_USDT_BTC');
     Army.hikePath('DGB_USDT_BTC_DGB');
-    // lookForAll();
+    Army.hikeLink('DGB', 'BTC');
+    lookForAll();
 
     console.log(Elephant.getSortedPaths('DGB', 'BTC'));
-    console.log("end");
 }
 
 async function app() {
