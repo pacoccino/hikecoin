@@ -2,9 +2,11 @@
   "name": "hikecoin",
   "version": "0.1.0",
   "description": "Find your path through coin valley",
-  "main": "src/index.js",
   "scripts": {
-    "start": "babel src -d dist"
+    "start": "npm run prod",
+    "dev": "babel-node src",
+    "prod": "node dist",
+    "build": "babel src -d dist"
   },
   "author": "pakokrew@gmail.com",
   "license": "ISC",

@@ -9,7 +9,7 @@ const normalize = report => {
 const API = () => {
     const app = express();
 
-    app.set('PORT', process.ENV.PORT || 3000);
+    app.set('PORT', process.env.PORT || 3000);
     app.get('/', function (req, res) {
         res.status(200).send();
     });

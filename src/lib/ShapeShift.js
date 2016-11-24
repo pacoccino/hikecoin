@@ -1,7 +1,7 @@
 const rq = require('request-promise-native');
 
-const mi = require('../data/marketinfo.json');
-const coins = require('../data/coins.json');
+const mi = require('../../data/marketinfo.json');
+const coins = require('../../data/coins.json');
 
 class ShapeShift {
     constructor() {

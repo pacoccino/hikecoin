@@ -1,6 +1,8 @@
+require('babel-polyfill');
+
 const Coins = require('./models/Coins');
 const Army = require('./lib/Army');
-const API = require('./lib/api');
+const API = require('./lib/Api');
 const Hiker = require('./lib/Hiker');
 const Elephant = require('./models/Elephant');
 
@@ -46,5 +48,3 @@ try {
 } catch(e) {
     console.error(e);
 }
-
-process.on('unhandledRejection', (reason, promise) => console.error(reason));

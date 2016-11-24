@@ -1,6 +1,6 @@
 // const amqp = require('amqplib/callback_api');
 
-const config = require('../config.json');
+const config = require('../../config.json');
 const Hiker = require('./Hiker');
 const Coins = require('../models/Coins');
 

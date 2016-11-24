@@ -1,5 +1,5 @@
 const Coin = require('./Coin');
-const ShapeShift = require('../lib/shapeshift');
+const ShapeShift = require('../lib/ShapeShift');
 const async = require('async');
 
 class Coins {
