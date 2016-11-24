@@ -4,7 +4,7 @@
   "description": "Find your path through coin valley",
   "main": "src/index.js",
   "scripts": {
-    "start": "babel src -d src"
+    "start": "babel src -d dist"
   },
   "author": "pakokrew@gmail.com",
   "license": "ISC",
