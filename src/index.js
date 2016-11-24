@@ -1,6 +1,6 @@
 const Coins = require('./models/Coins');
 const Army = require('./lib/Army');
-// const API = require('./lib/api');
+const API = require('./lib/api');
 const Hiker = require('./lib/Hiker');
 const Elephant = require('./models/Elephant');
 
@@ -11,12 +11,7 @@ async function coinRefresher() {
     await Coins.updateLinks();
     console.log("Coins updated");
 }
-
-async function app() {
-
-    await coinRefresher();
-
-    setInterval(coinRefresher, refreshInterval);
+function test() {
 
     const lookForAll = () => {
         console.log("looking ForAll");
@@ -29,12 +24,21 @@ async function app() {
     Army.hikePath('DGB_BTC');
     Army.hikePath('DGB_USDT_BTC');
     Army.hikePath('DGB_BTC_DGB_USDT_BTC');
-    // Army.hikePath('DGB_USDT_BTC_DGB');
+    Army.hikePath('DGB_USDT_BTC_DGB');
     // lookForAll();
 
-    console.log(Elephant.getSortedPaths('DGB', 'BTC'))
-    // API();
+    console.log(Elephant.getSortedPaths('DGB', 'BTC'));
     console.log("end");
+}
+
+async function app() {
+
+    await coinRefresher();
+
+    setInterval(coinRefresher, refreshInterval);
+
+    API();
+    // test();
 }
 
 try {

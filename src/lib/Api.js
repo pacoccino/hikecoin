@@ -10,7 +10,10 @@ const API = () => {
     const app = express();
 
     app.set('PORT', process.ENV.PORT || 3000);
-    app.get('/').status(200);
+    app.get('/', function (req, res) {
+        res.status(200).send();
+    });
+
 
     app.get('/hikePath', (req, res, next) => {
         const path = req.query.path;
@@ -46,7 +49,7 @@ const API = () => {
         res.status(500).send(error);
     });
 
-    app.listen(app.get('PORT'));
+    app.listen(app.get('PORT'), () => console.log(`Listening on port ${app.get('PORT')}`));
 };
 
 module.exports = API;

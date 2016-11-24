@@ -4,7 +4,7 @@
   "description": "Find your path through coin valley",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src"
+    "start": "babel src -d src"
   },
   "author": "pakokrew@gmail.com",
   "license": "ISC",
@@ -16,8 +16,12 @@
     "blockchain"
   ],
   "dependencies": {
+    "amqplib": "^0.5.1",
     "async": "^2.1.2",
+    "babel-cli": "^6.18.0",
+    "babel-preset-latest": "^6.16.0",
     "decimal.js": "^7.1.0",
+    "express": "^4.14.0",
     "request": "^2.79.0",
     "request-promise-native": "^1.0.3"
   }
