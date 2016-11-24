@@ -13,6 +13,13 @@ async function coinRefresher() {
     await Coins.updateLinks();
     console.log("Coins updated");
 }
+async function linkRefresher() {
+    console.log("Updating links...");
+    await Army.forAll();
+    linkRefresher();
+    console.log("Links updated");
+}
+
 function test() {
 
     const lookForAll = () => {
@@ -24,14 +31,20 @@ function test() {
     };
 
     // Army.hikeLink('DGB', 'BTC');
-    Army.hikePath('DGB_BTC');
-    Army.hikePath('DGB_USDT_BTC');
-    Army.hikePath('DGB_BTC_DGB_USDT_BTC');
-    Army.hikePath('DGB_USDT_BTC_DGB');
-    Army.hikeLink('DGB', 'BTC');
-    lookForAll();
+    // Army.hikePath('DGB_BTC');
+    // Army.hikePath('DGB_USDT_BTC');
+    // Army.hikePath('DGB_BTC_DGB_USDT_BTC');
+    // Army.hikePath('DGB_USDT_BTC_DGB');
 
-    console.log(Elephant.getSortedPaths('DGB', 'BTC'));
+    Army.hikePath('DOGE_USDT_BTC');
+    const report = Army.hikePath('DGB_USDT_BTC').then(report => {
+        console.log(`${report.sourceBalance} ${report.sourceCoin} -> ${report.finalBalance} ${report.finalCoin} -  ${report.path}`);
+    });
+
+    // Army.hikeLink('DGB', 'BTC');
+    // lookForAll();
+
+    // console.log(Elephant.getSortedPaths('DGB', 'BTC'));
 }
 
 async function app() {
@@ -39,8 +52,8 @@ async function app() {
     await coinRefresher();
 
     setInterval(coinRefresher, refreshInterval);
-
     API();
+    linkRefresher();
     // test();
 }
 

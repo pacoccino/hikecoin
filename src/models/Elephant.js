@@ -46,7 +46,7 @@ class Elephant {
         if(sortedPaths.length > 0) {
             return Promise.resolve(sortedPaths);
         } else {
-            return Promise.reject("Path not computed");
+            return Promise.reject("Path not yet computed, either explicitly hike it or wait until it is automatically fetched");
         }
     }
 

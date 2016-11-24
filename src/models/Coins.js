@@ -18,22 +18,18 @@ class Coins {
     }
 
     async initCoins() {
-        try {
-            const availableCoins = await ShapeShift.getCoins();
+        const availableCoins = await ShapeShift.getCoins();
 
-            Object.keys(availableCoins).forEach(key => {
-                const info = availableCoins[key];
-                const coin = new Coin(info);
+        Object.keys(availableCoins).forEach(key => {
+            const info = availableCoins[key];
+            const coin = new Coin(info);
 
-                if(coin.avalaible) {
-                    this.addCoin(coin);
-                }
-            });
+            if(coin.avalaible) {
+                this.addCoin(coin);
+            }
+        });
 
-            console.log("Found " + this.coins.size + " coins");
-        } catch (e) {
-            console.log(e);
-        }
+        // console.log("Found " + this.coins.size + " coins");
     }
 
     static async getRate(coinSource, coinDest) {

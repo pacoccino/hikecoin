@@ -1,4 +1,5 @@
 // const amqp = require('amqplib/callback_api');
+const async = require('async');
 
 const config = require('../../config.json');
 const Hiker = require('./Hiker');
@@ -75,6 +76,33 @@ class Army {
                 }
             })
         })
+    }
+    static async forAll() {
+        return new Promise((resolve, reject) => {
+            const coins = Coins.getCoins();
+
+            const compute = couple => {
+                return Army.hikeLink(couple.fromCoin.symbol, couple.toCoin.symbol);
+            };
+            const combinationsToCompute = [];
+            coins.forEach(fromCoin => {
+                coins.forEach(toCoin => {
+                    combinationsToCompute.push({fromCoin, toCoin});
+                })
+            });
+
+            async.eachSeries(combinationsToCompute, (couple, cb) => {
+                // Timeout to let some others computations
+                setTimeout(() => {
+                    compute(couple).then(() => {
+                        cb();
+                    }).catch(cb);
+                }, 50);
+            }, e => {
+                if(e) reject(e);
+                else resolve();
+            });
+        });
     }
 }
 

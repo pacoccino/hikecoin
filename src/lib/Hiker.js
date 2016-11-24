@@ -6,6 +6,7 @@ class Hiker {
     constructor(maxHeight = 3) {
         this.paths = [];
         this.maxHeight = maxHeight;
+        this.coinsList = Coins.getCoins();
     }
 
     setPath(options = {sourceCoin: null, destCoin: null, path: null }) {
@@ -90,7 +91,7 @@ class Hiker {
 
     _fetchWallet(currentWallet) {
 
-        return Coins.getCoins().reduce( (acc, destinationCoin) => {
+        return this.coinsList.reduce( (acc, destinationCoin) => {
 
             if(destinationCoin !== currentWallet.coin) {
 
@@ -138,9 +139,7 @@ class Hiker {
 
             currentWallet = newWallet;
         }
-        const report = this._storePath(currentWallet);
-        console.log(`${report.sourceBalance} ${report.sourceCoin} -> ${report.finalBalance} ${report.finalCoin} -  ${report.path}`);
-        return report;
+        return this._storePath(currentWallet);
     }
 
     isUncommon() {
