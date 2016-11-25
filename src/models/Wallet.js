@@ -37,6 +37,7 @@ class Wallet {
 
     static change(balance, link) {
         // TODO transaction fees
+        // and minimum/maximum
         return balance.times(link.rate);
     }
 

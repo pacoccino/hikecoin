@@ -4,7 +4,7 @@ hikecoin
 > Altcoin mountains carto-graphy ;)
 
 
-TLDR: [https://hikecoin-upclfhddxa.now.sh/listBestPaths?limit=20](https://hikecoin-upclfhddxa.now.sh/listBestPaths?limit=20)
+TLDR: [https://hikecoin-atgnsrhwcx.now.sh/listBestPaths?limit=20](https://hikecoin-atgnsrhwcx.now.sh/listBestPaths?limit=20)
 
 This application tries to find paths through the altcoin exchanges rates which are more valuable that direct transfer, with graph algorithms.
 

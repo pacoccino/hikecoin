@@ -6,7 +6,8 @@
     "start": "npm run prod",
     "dev": "babel-node src",
     "prod": "node dist",
-    "build": "babel src -d dist"
+    "build": "babel src -d dist && npm run doc",
+    "doc": "apidoc -i src -o doc"
   },
   "author": "pakokrew@gmail.com",
   "license": "ISC",
@@ -19,9 +20,11 @@
   ],
   "dependencies": {
     "amqplib": "^0.5.1",
+    "apidoc": "^0.16.1",
     "async": "^2.1.2",
     "babel-cli": "^6.18.0",
     "babel-preset-latest": "^6.16.0",
+    "cors": "^2.8.1",
     "decimal.js": "^7.1.0",
     "express": "^4.14.0",
     "request": "^2.79.0",
