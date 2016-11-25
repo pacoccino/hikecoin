@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 class Elephant {
     constructor() {
         this.reports = new Map();
@@ -54,6 +56,24 @@ class Elephant {
     getBestPath(sourceCoin, destCoin) {
         return this.getSortedPaths(sourceCoin, destCoin, 1)
             .then(sortedPaths => sortedPaths[0]);
+    }
+
+    toJson() {
+        let data = [];
+        const reportIterator = this.reports.values();
+        let currentReport;
+        while(currentReport = reportIterator.next().value) {
+            data.push(currentReport);
+        }
+
+        // todo bufferify (RangeError: Invalid string length)
+        return JSON.stringify(data, null, 2);
+    }
+
+    write() {
+        const json = this.toJson();
+        fs.writeFileSync("./data/elephant.json", json);
+        console.log("Wrote elephant")
     }
 }
 

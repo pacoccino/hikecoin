@@ -11,6 +11,9 @@ This application tries to find paths through the altcoin exchanges rates which a
 The change rates are extracted from [ShapeShift](https://shapeshift.io) API
 
 ----------
+## Documentation
+
+[https://hikecoin-atgnsrhwcx.now.sh/](https://hikecoin-atgnsrhwcx.now.sh/)
 
 ## Examples
 Here's a list of api calls.

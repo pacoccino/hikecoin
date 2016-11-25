@@ -6,18 +6,21 @@ const API = require('./lib/Api');
 const Hiker = require('./lib/Hiker');
 const Elephant = require('./models/Elephant');
 
-const refreshInterval = 30000;
-
 async function coinRefresher() {
     await Coins.initCoins();
     await Coins.updateLinks();
+    setTimeout(coinRefresher, 30 * 1000);
     console.log("Coins updated");
 }
 async function linkRefresher() {
     console.log("Updating links...");
+
+    let start = Date.now();
     await Army.forAll();
+    let time = Date.now() - start;
+    // Elephant.write();
     setTimeout(linkRefresher, 30 * 60 * 1000);
-    console.log("Links updated");
+    console.log(`Links updated,  took ${time/1000}s`);
 }
 
 function test() {
@@ -40,6 +43,7 @@ function test() {
     const report = Army.hikePath('DGB_USDT_BTC').then(report => {
         console.log(`${report.sourceBalance} ${report.sourceCoin} -> ${report.finalBalance} ${report.finalCoin} -  ${report.path}`);
     });
+    Elephant.write();
 
     // Army.hikeLink('DGB', 'BTC');
     // lookForAll();
@@ -51,8 +55,9 @@ async function app() {
 
     await coinRefresher();
 
-    setInterval(coinRefresher, refreshInterval);
     API();
+
+    coinRefresher();
     linkRefresher();
     // test();
 }
