@@ -28,11 +28,9 @@ class Coins {
                 this.addCoin(coin);
             }
         });
-
-        // console.log("Found " + this.coins.size + " coins");
     }
 
-    static async getRate(coinSource, coinDest) {
+    /*static async getRate(coinSource, coinDest) {
         const symbolpair = coinSource.symbol + '_' + coinDest.symbol;
         return await ShapeShift.marketInfo(symbolpair);
     }
@@ -64,7 +62,7 @@ class Coins {
                 }
             });
         });
-    }
+    }*/
 
     async updateLinks() {
         const allLinks = await ShapeShift.marketInfo();

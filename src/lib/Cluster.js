@@ -6,7 +6,7 @@ const clusterize = (App) => {
 
         console.log('spawning consumers');
 
-        for (let i = 0; i < process.numCPU; i++) {
+        for (let i = 0; i < 2; i++) {
             cluster.fork();
         }
 

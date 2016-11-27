@@ -2,6 +2,7 @@ const fs = require('fs');
 
 class Elephant {
     constructor() {
+        // TODO distribute memory
         this.reports = new Map();
     }
 
@@ -13,14 +14,18 @@ class Elephant {
         return this.reports.get(path);
     }
 
-    listBestPaths(limit = 10) {
+    get size() {
+        return this.reports.size;
+    }
+
+    listBestPaths(limit = 10, takeAll = false) {
         const paths = [];
         // TODO aggregate by source/dest
 
         const reportIterator = this.reports.values();
         let currentReport;
         while(currentReport = reportIterator.next().value) {
-            if(currentReport.benefit > 1) {
+            if(takeAll || currentReport.benefit > 1) {
                 paths.push(currentReport);
             }
         }

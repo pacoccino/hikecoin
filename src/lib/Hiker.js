@@ -5,7 +5,6 @@ const Report = require('../models/Report');
 
 class Hiker {
     constructor(maxHeight = 3) {
-        this.paths = [];
         this.maxHeight = maxHeight;
         this.coinsList = Coins.getCoins();
     }
@@ -60,7 +59,6 @@ class Hiker {
 
     _storePath(wallet) {
         const report = new Report(wallet, this.directResult);
-        this.paths = this.paths.concat(report);
 
         if(wallet.balance > this.maxBalance) {
             this.maxReport = report;
@@ -122,7 +120,7 @@ class Hiker {
             this._displayMaxima();
         }
 
-        return this.paths;
+        return true;
     }
 
     hikePath() {
