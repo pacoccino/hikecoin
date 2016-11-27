@@ -108,22 +108,20 @@ const API = () => {
      * @apiGroup Elephant
      * @apiDescription Get every pre-computed paths from one coin to another sorted by best benefit first
      *
-     * @apiParam {String} fromCoin Input coin (ex: BTC)
-     * @apiParam {String} toCoin Output coin (ex: DOGE)
+     * @apiParam {String} [fromCoin] Input coin (ex: BTC)
+     * @apiParam {String} [toCoin] Output coin (ex: DOGE)
      * @apiParam {number} [limit=10] Limit the results
      *
      * @apiSuccess {Object[]} report Report object - See Models
      */
     app.get('/getSortedPaths', (req, res, next) => {
-        let fromCoin = req.query.fromCoin;
-        let toCoin = req.query.toCoin;
-        if(!fromCoin) return next("Please provide fromCoin");
-        if(!toCoin) return next("Please provide toCoin");
+        let fromCoin = req.query.fromCoin || "";
+        let toCoin = req.query.toCoin || "";
         fromCoin = req.query.fromCoin.toUpperCase();
         toCoin = req.query.toCoin.toUpperCase();
         const limit = req.query.limit || 10;
 
-        Elephant.getSortedPaths(fromCoin, toCoin, limit)
+        Elephant.getSortedPaths({fromCoin, toCoin, limit})
             .then(sortedPaths => {
                 res.send(sortedPaths);
             })
@@ -166,13 +164,16 @@ const API = () => {
      * @apiDescription List every best pre-computed paths sorted by best benefit first
      *
      * @apiParam {number} [limit=10] Limit the results
+     * @apiParam {boolean} [takeAll=false] Keep all results (even minor benefit)
      *
      * @apiSuccess {Object[]} report Report object - See Models
      */
     app.get('/listBestPaths', (req, res, next) => {
         const limit = req.query.limit || 10;
+        const takeAll = req.query.takeAll === 'true' || false;
+        const agg = req.query.agg === 'true' || false;
 
-        Elephant.listBestPaths(limit)
+        Elephant.listBestPaths(limit, takeAll, agg)
             .then(bestPaths => {
                 res.send(bestPaths);
             })

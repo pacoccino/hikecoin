@@ -18,9 +18,8 @@ class Elephant {
         return this.reports.size;
     }
 
-    listBestPaths(limit = 10, takeAll = false) {
-        const paths = [];
-        // TODO aggregate by source/dest
+    listBestPaths(limit = 10, takeAll = false, aggregate = false) {
+        let paths = [];
 
         const reportIterator = this.reports.values();
         let currentReport;
@@ -32,18 +31,41 @@ class Elephant {
 
         let sortedPaths = paths.sort((a,b) => {
             return b.benefit - a.benefit;
-        }).slice(0, limit);
+        });
+        let resultPaths = sortedPaths;
 
-        return Promise.resolve(sortedPaths);
+        // TODO
+        if(aggregate) {
+            const sourceAgg = [];
+            const destAgg = [];
+            let aggregatedPath = [];
+            for (var i = 0; i < resultPaths.length; i++) {
+                var path = resultPaths[i];
+
+                if(sourceAgg.indexOf(path.sourceCoin) === -1 &&
+                    destAgg.indexOf(path.destCoin) === -1)
+                {
+                    aggregatedPath.push(path);
+                    sourceAgg.push(path.sourceCoin);
+                    destAgg.push(path.destCoin);
+                }
+            }
+            resultPaths = aggregatedPath;
+        }
+
+        resultPaths = resultPaths.slice(0, limit);
+
+        return Promise.resolve(resultPaths);
     }
 
-    getSortedPaths(sourceCoin, destCoin, limit = 10) {
-        const paths = [];
+    getSortedPaths(options = {}) {
+        let {fromCoin = null, toCoin = null, limit = 10} = options;
 
+        const paths = [];
         const reportIterator = this.reports.values();
         let currentReport;
         while(currentReport = reportIterator.next().value) {
-            if(currentReport.sourceCoin === sourceCoin && currentReport.finalCoin === destCoin) {
+            if((!fromCoin || currentReport.sourceCoin === fromCoin) && (!toCoin || currentReport.finalCoin === toCoin)) {
                 paths.push(currentReport);
             }
         }
@@ -59,7 +81,7 @@ class Elephant {
     }
 
     getBestPath(sourceCoin, destCoin) {
-        return this.getSortedPaths(sourceCoin, destCoin, 1)
+        return this.getSortedPaths({sourceCoin, destCoin, limit: 1})
             .then(sortedPaths => sortedPaths[0]);
     }
 
